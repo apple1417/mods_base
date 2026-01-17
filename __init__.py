@@ -165,11 +165,25 @@ match Game.get_tree():
 
         ObjectFlags = WillowObjectFlags  # type: ignore
 
-    case Game.Oak:
-        ENGINE = unrealsdk.find_object(  # pyright: ignore[reportConstantRedefinition]
-            "OakGameEngine",
-            "/Engine/Transient.OakGameEngine_0",
-        )
+    case Game.Oak | Game.Oak2:
+        if Game.get_tree() is Game.Oak:
+            ENGINE = unrealsdk.find_object(  # pyright: ignore[reportConstantRedefinition]
+                "OakGameEngine",
+                "/Engine/Transient.OakGameEngine_0",
+            )
+        else:
+            try:
+                ENGINE = unrealsdk.find_object(  # pyright: ignore[reportConstantRedefinition]
+                    "OakGameEngine",
+                    "/Engine/Transient.OakGameEngine_2147482611",
+                )
+            except ValueError:
+                # In case the number changes
+                ENGINE = next(  # pyright: ignore[reportConstantRedefinition]
+                    obj
+                    for obj in unrealsdk.find_all("OakGameEngine")
+                    if not obj.Name.startswith("Default__")
+                )
 
         _GAME_INSTANCE_PROP = ENGINE.Class._find_prop("GameInstance")
         _LOCAL_PLAYERS_PROP = _GAME_INSTANCE_PROP.PropertyClass._find_prop("LocalPlayers")
