@@ -67,7 +67,7 @@ class KeybindType:
     # If `event_filter` is None, `callback` should be `KeybindCallback_Event | None`
     # If `event_filter` is not None, `callback` should be `KeybindCallback_NoArgs | None`
     # The decorator uses overloads to enforce this
-    callback: KeybindCallback_Event | KeybindCallback_NoArgs | None = None
+    callback: KeybindCallback_Event | KeybindCallback_NoArgs
 
     _: KW_ONLY
     display_name: str = None  # type: ignore
