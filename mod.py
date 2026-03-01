@@ -27,6 +27,7 @@ class Game(Flag):
     """A flags enum of the supported games."""
 
     BL1 = auto()
+    BL1E = auto()
     BL2 = auto()
     TPS = auto()
     AoDK = auto()
@@ -36,6 +37,7 @@ class Game(Flag):
 
     type _GameOnly = Literal[
         Game.BL1,
+        Game.BL1E,
         Game.BL2,
         Game.TPS,
         Game.AoDK,
@@ -44,7 +46,7 @@ class Game(Flag):
         Game.BL4,
     ]
 
-    Willow1 = BL1
+    Willow1 = BL1 | BL1E
     Willow2 = BL2 | TPS | AoDK
     Oak = BL3 | WL
     Oak2 = BL4
@@ -68,6 +70,7 @@ class Game(Flag):
         default_game: Game._GameOnly
         if is_64bits:
             lower_exe_names = {
+                "borderlandsgoty.exe": Game.BL1E,
                 "borderlands3.exe": Game.BL3,
                 "borderlands4.exe": Game.BL4,
                 "wonderlands.exe": Game.WL,
@@ -107,7 +110,7 @@ class Game(Flag):
             The current game's tree.
         """
         match Game.get_current():
-            case Game.BL1:
+            case Game.BL1 | Game.BL1E:
                 return Game.Willow1
             case Game.BL2 | Game.TPS | Game.AoDK:
                 return Game.Willow2

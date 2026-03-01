@@ -23,7 +23,7 @@ game specific things:
 - Added extra typing overloads to the `keybind` factory, to allow cases such as
   `keybind("name", callback=func)`
 
-- Added support for BL4.
+- Added support for BL4 and BL1E.
 
 - Upgraded to Python 3.14.
 
