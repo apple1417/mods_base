@@ -1,9 +1,13 @@
+from __future__ import annotations
+
 import zipfile
-from collections.abc import Iterator
 from contextlib import AbstractContextManager, contextmanager
 from io import TextIOWrapper
 from pathlib import Path, PurePosixPath, PureWindowsPath
-from typing import IO, Literal, overload
+from typing import IO, TYPE_CHECKING, Literal, overload
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
 
 @overload

@@ -1,13 +1,13 @@
+from __future__ import annotations
+
 import contextlib
 import functools
 import inspect
 import operator
 import tomllib
 import warnings
-from collections.abc import Callable, Sequence
 from pathlib import Path
-from types import ModuleType
-from typing import Any, TypedDict
+from typing import TYPE_CHECKING, Any, TypedDict
 
 from .command import AbstractCommand
 from .dot_sdkmod import open_in_mod_dir
@@ -17,6 +17,10 @@ from .mod import CoopSupport, Game, Mod, ModType
 from .mod_list import deregister_mod, mod_list, register_mod
 from .options import BaseOption, GroupedOption, NestedOption
 from .settings import SETTINGS_DIR
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Sequence
+    from types import ModuleType
 
 _WARNING_SKIPS: tuple[str] = (str(Path(__file__).parent),)
 
@@ -184,7 +188,7 @@ def load_pyproject(module: ModuleType) -> dict[str, Any]:
     try:
         with open_in_mod_dir(pyproject, binary=True) as file:
             return tomllib.load(file)
-    except (FileNotFoundError, tomllib.TOMLDecodeError):
+    except FileNotFoundError, tomllib.TOMLDecodeError:
         return {}
 
 

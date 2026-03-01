@@ -1,15 +1,17 @@
+from __future__ import annotations
+
 import warnings
 from abc import ABC, abstractmethod
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import KW_ONLY, dataclass, field
-from types import EllipsisType
 from typing import TYPE_CHECKING, Any, Literal, Self, cast
 
 from unrealsdk import logging
 
-from .keybinds import KeybindType
-
 if TYPE_CHECKING:
+    from types import EllipsisType
+
+    from .keybinds import KeybindType
     from .mod import Mod
 
 # Little ugly to repeat this from settings, but we can't import it from there cause it creates a
@@ -41,7 +43,7 @@ class BaseOption(ABC):
     description_title: str = None  # type: ignore
     is_hidden: bool = False
 
-    mod: "Mod | None" = field(default=None, init=False, repr=False)
+    mod: Mod | None = field(default=None, init=False, repr=False)
 
     @abstractmethod
     def __init__(self) -> None:

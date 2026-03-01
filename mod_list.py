@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import json
 import os
 import re
@@ -5,21 +7,25 @@ import traceback
 from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
 from functools import cmp_to_key
-from pathlib import Path
 from threading import Thread
+from typing import TYPE_CHECKING
 from urllib.request import Request, urlopen
 
 import pyunrealsdk
 import unrealsdk
 
 from . import MODS_DIR, __version__
-from .command import AbstractCommand
-from .hook import HookType
 from .html_to_plain_text import html_to_plain_text
-from .keybinds import KeybindType
 from .mod import CoopSupport, Game, Library, Mod, ModType
 from .options import BaseOption, ButtonOption, GroupedOption, HiddenOption
 from .settings import SETTINGS_DIR
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+    from .command import AbstractCommand
+    from .hook import HookType
+    from .keybinds import KeybindType
 
 # region Mod List
 
