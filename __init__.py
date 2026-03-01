@@ -1,10 +1,11 @@
+from __future__ import annotations
+
 from enum import IntFlag, auto
 from functools import wraps
 from pathlib import Path
 from typing import TYPE_CHECKING, Literal, overload
 
 import unrealsdk
-from unrealsdk.unreal import UObject
 
 from .dot_sdkmod import open_in_mod_dir
 
@@ -54,6 +55,9 @@ from .options import (
     ValueOption,
 )
 from .settings import SETTINGS_DIR
+
+if TYPE_CHECKING:
+    from unrealsdk.unreal import UObject
 
 __all__: tuple[str, ...] = (
     "ENGINE",
@@ -150,7 +154,7 @@ match Game.get_tree():
         )
 
         _GAME_PLAYERS_PROP = ENGINE.Class._find_prop("GamePlayers")
-        _ACTOR_PROP = _GAME_PLAYERS_PROP.Inner.PropertyClass._find_prop("Actor")
+        _ACTOR_PROP = _GAME_PLAYERS_PROP.Inner.PropertyClass._find_prop("Actor")  # type: ignore
 
         @wraps(get_pc)
         def get_pc_willow(*, possibly_loading: bool = False) -> UObject | None:  # noqa: ARG001
@@ -165,15 +169,29 @@ match Game.get_tree():
 
         ObjectFlags = WillowObjectFlags  # type: ignore
 
-    case Game.Oak:
-        ENGINE = unrealsdk.find_object(  # pyright: ignore[reportConstantRedefinition]
-            "OakGameEngine",
-            "/Engine/Transient.OakGameEngine_0",
-        )
+    case Game.Oak | Game.Oak2:
+        if Game.get_tree() is Game.Oak:
+            ENGINE = unrealsdk.find_object(  # pyright: ignore[reportConstantRedefinition]
+                "OakGameEngine",
+                "/Engine/Transient.OakGameEngine_0",
+            )
+        else:
+            try:
+                ENGINE = unrealsdk.find_object(  # pyright: ignore[reportConstantRedefinition]
+                    "OakGameEngine",
+                    "/Engine/Transient.OakGameEngine_2147482611",
+                )
+            except ValueError:
+                # In case the number changes
+                ENGINE = next(  # pyright: ignore[reportConstantRedefinition]
+                    obj
+                    for obj in unrealsdk.find_all("OakGameEngine")
+                    if not obj.Name.startswith("Default__")
+                )
 
         _GAME_INSTANCE_PROP = ENGINE.Class._find_prop("GameInstance")
-        _LOCAL_PLAYERS_PROP = _GAME_INSTANCE_PROP.PropertyClass._find_prop("LocalPlayers")
-        _PLAYER_CONTROLLER_PROP = _LOCAL_PLAYERS_PROP.Inner.PropertyClass._find_prop(
+        _LOCAL_PLAYERS_PROP = _GAME_INSTANCE_PROP.PropertyClass._find_prop("LocalPlayers")  # type: ignore
+        _PLAYER_CONTROLLER_PROP = _LOCAL_PLAYERS_PROP.Inner.PropertyClass._find_prop(  # type: ignore
             "PlayerController",
         )
 

@@ -51,7 +51,7 @@ def default_load_mod_settings(self: Mod) -> None:
     try:
         with self.settings_file.open() as file:
             settings = json.load(file)
-    except (FileNotFoundError, json.JSONDecodeError):
+    except FileNotFoundError, json.JSONDecodeError:
         return
 
     # No sense doing this if not defined

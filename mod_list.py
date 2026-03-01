@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import json
 import os
 import re
@@ -5,21 +7,25 @@ import traceback
 from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
 from functools import cmp_to_key
-from pathlib import Path
 from threading import Thread
+from typing import TYPE_CHECKING
 from urllib.request import Request, urlopen
 
 import pyunrealsdk
 import unrealsdk
 
 from . import MODS_DIR, __version__
-from .command import AbstractCommand
-from .hook import HookType
 from .html_to_plain_text import html_to_plain_text
-from .keybinds import KeybindType
 from .mod import CoopSupport, Game, Library, Mod, ModType
 from .options import BaseOption, ButtonOption, GroupedOption, HiddenOption
 from .settings import SETTINGS_DIR
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+    from .command import AbstractCommand
+    from .hook import HookType
+    from .keybinds import KeybindType
 
 # region Mod List
 
@@ -126,6 +132,16 @@ match Game.get_tree():
         )
         MOD_RELEASE_DOWNLOAD_URL = (  # pyright: ignore[reportConstantRedefinition]
             "https://github.com/bl-sdk/oak-mod-manager/releases/"
+        )
+    case Game.Oak2:
+        MOD_DB_URL = (  # pyright: ignore[reportConstantRedefinition]
+            "https://bl-sdk.github.io/oak2-mod-db/"
+        )
+        MOD_RELEASE_API_URL = (  # pyright: ignore[reportConstantRedefinition]
+            "https://api.github.com/repos/bl-sdk/oak2-mod-manager/releases/latest"
+        )
+        MOD_RELEASE_DOWNLOAD_URL = (  # pyright: ignore[reportConstantRedefinition]
+            "https://github.com/bl-sdk/oak2-mod-manager/releases/"
         )
 
 MANAGER_VERSION = unrealsdk.config.get("mod_manager", {}).get("display_version", "Unknown Version")

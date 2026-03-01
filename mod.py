@@ -27,32 +27,52 @@ class Game(Flag):
     """A flags enum of the supported games."""
 
     BL1 = auto()
+    BL1E = auto()
     BL2 = auto()
     TPS = auto()
     AoDK = auto()
     BL3 = auto()
     WL = auto()
+    BL4 = auto()
 
-    Willow1 = BL1
+    type _GameOnly = Literal[
+        Game.BL1,
+        Game.BL1E,
+        Game.BL2,
+        Game.TPS,
+        Game.AoDK,
+        Game.BL3,
+        Game.WL,
+        Game.BL4,
+    ]
+
+    Willow1 = BL1 | BL1E
     Willow2 = BL2 | TPS | AoDK
     Oak = BL3 | WL
+    Oak2 = BL4
+
+    type _TreeOnly = Literal[
+        Game.Willow1,
+        Game.Willow2,
+        Game.Oak,
+        Game.Oak2,
+    ]
 
     @staticmethod
     @cache
-    def get_current() -> Literal[Game.BL1, Game.BL2, Game.TPS, Game.AoDK, Game.BL3, Game.WL]:
+    def get_current() -> _GameOnly:
         """Gets the current game."""
 
         # As a bit of safety, we can use the architecture to limit which games are allowed
         is_64bits = sys.maxsize > 2**32
 
-        lower_exe_names: dict[
-            str,
-            Literal[Game.BL1, Game.BL2, Game.TPS, Game.AoDK, Game.BL3, Game.WL],
-        ]
-        default_game: Literal[Game.BL1, Game.BL2, Game.TPS, Game.AoDK, Game.BL3, Game.WL]
+        lower_exe_names: dict[str, Game._GameOnly]
+        default_game: Game._GameOnly
         if is_64bits:
             lower_exe_names = {
+                "borderlandsgoty.exe": Game.BL1E,
                 "borderlands3.exe": Game.BL3,
+                "borderlands4.exe": Game.BL4,
                 "wonderlands.exe": Game.WL,
             }
             default_game = Game.BL3
@@ -78,7 +98,7 @@ class Game(Flag):
 
     @staticmethod
     @cache
-    def get_tree() -> Literal[Game.Willow1, Game.Willow2, Game.Oak]:
+    def get_tree() -> _TreeOnly:
         """
         Gets the "tree" the game we're currently running belongs to.
 
@@ -90,12 +110,14 @@ class Game(Flag):
             The current game's tree.
         """
         match Game.get_current():
-            case Game.BL1:
+            case Game.BL1 | Game.BL1E:
                 return Game.Willow1
             case Game.BL2 | Game.TPS | Game.AoDK:
                 return Game.Willow2
             case Game.BL3 | Game.WL:
                 return Game.Oak
+            case Game.BL4:
+                return Game.Oak2
 
 
 class ModType(Enum):

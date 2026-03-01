@@ -83,7 +83,7 @@ class ArgParseCommand(AbstractCommand):
         nargs: int | str | None = None,
         const: Any = ...,
         default: Any = ...,
-        type: Callable[[str], Any] | argparse.FileType | str = ...,
+        type: Callable[[str], Any] | str = ...,
         choices: Iterable[T] | None = ...,
         required: bool = ...,
         help: str | None = ...,

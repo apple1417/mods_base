@@ -1,5 +1,6 @@
 .vs
 .vscode
 .idea
+.nvim.lua
 
 __pycache__
